@@ -1,0 +1,103 @@
+Chapter 1 (Introduction)
+	Goals:
+		Scalability:
+			- Three different dimensions of scalability for DS:
+				- scalable with respect to tis size, meaning we can easily add more users and resources to the system
+				- geographically scalable system is one in which the users and resources may lie far apart
+				- administratively scalable, meaning it can still be easy to maange even if it spans many independent administrative organizations
+			- If a sytem is scalable in one or more of these dimensions, then it often exhibits lose of performance when the system scales
+			- Scalability problems with each dimension
+				- Size scalability is often confronted with the limitations of centralized services, data, and algorithms. Many services are centralized onto one server, and
+				  this causes the server to be the bottleneck because even with unlimited processing and storage, communication with the server will
+				  eventually prohibit further growth. Sometimes one server is needed due to the sensitivity of data. Using centralized algorithms is a bad
+				  idea due to having to go out and collect data from all sorts of machines, thus clogging upt he network. ONLY USE DECENTRALIZED ALGORITHMS.
+				  Here are the characteristics of a decentralized algorithm:
+					1) No machine has complete information about the system state
+					2) Machines make decisions based only on local information
+					3) Failure of one machine does not ruin the algorithm
+					4) There is no implicit assumption that a global clock exists
+				
+				  The first 3 characteristics are obvious (according to the book), but the fourth is not. Can't have all machines run at a precise time because
+				  they are in different locations (not synchronized). Maybe possible on a single LAN, but still shouldn't be done.
+				- The main geographical scalability issue is that DSs are designed for LANs and are based on synchronous communication. LANs typically provide
+				  highly reliable communication facilities because each component needs no more than a 300 ms to communicate. Another issue with geographical 
+				  scalability is communication in WANs are unreliable and are always point-to-point. The scheme used in LANs (broadcasting) cannot be used in
+				  WANs. Geographically scalability is strongly related to problems of centralized solutions that hinder size scalability. Geographical
+				  scalability will be limited with a system with many centralized components due to performance and reliablility issues with WANs. 
+				- Major issue with administrative scaling is conflicting policies with security, resource usage, and management. This is an issue when different
+				  domains require different security measures, and different rules.
+			- Scaling Techniques (to solve performance problems)
+				- 3 techniques of solving these issues: hiding communication latencies (async communication), distribution, and replication
+				-Async communication:
+					- This is important to achieve geographical scalability. Try to avoid waiting for responses to remote service requests as much as possible.
+						Ex) service has been requested at a remote machine, instead of waiting for a reply from the server, have it do other work that is useful
+						    for the requestor. Once a reply comes in, have a special handler complete the initial request.
+					  Some systems cannot effectively use async communication like interactive applications. A better solution in this case is to reduce the amount
+					  of communication that is needed. Move some of the computation that is normally done at the server to the client process requesting the service.
+						Ex) Java applets
+				-Distribution:
+					- Distribution involves taking a component and splitting it up into smaller parts, and spreading those parts across the system.
+						Ex) Consider WWW. Most users see the Internet as one giant document-based info system where each document has its own unique name (URL).
+						    The internet is physically distributed across a large number of servers, each handling some amount of documents. Name of the server
+							is encoded in the URL, and this is how the internet has scaled.
+				- Replication:
+					- replication not only increases availability, but helps to balance the load between components leading to better performance. Having a copy
+					  nearby can hide the communication latency issues with geographically dispersed systems.
+					- caching is a special form of replication. Caching results in making a copy of the resource, generally in the proximity of the client
+					  accessing the resource. Caching is a decision made by the client of the resource. Caching happens ondemand unlike replication which is done
+					  in advance.
+					- There is a drawback to both caching and replication that affects scalability. Modifying one copy makes them both different, thus causing
+					  consistency issues. To the extent of how this is tolerated depends on the usage of the resource. If it isn't updated frequently, then we
+					  can check every few minutes, but a highly changed resource is difficult. Could only be so fast in implementing a gloabl mechanism, but
+					  sometimes impossible and can be unscalable.
+			- Size scalabilities are the least problematic. Usually we can just increase the capacity of a machine and we are done. Geographical scalability is tougher because we
+			  cant get passed the speed of light. However, combining distribution, replication, and caching with different forms of consistency should be good enough. Administrative
+			  scaling is the most difficult because we have to solve nontechnical issues (politics and human collaboration). Possibly ignore (but not fully), but peer to peer is a
+			  partial solution to solving administrative scalability.
+
+		Pitfalls:
+			- List of false assumptions everyone makes when creating a DS:
+				1) The network is reliable
+				2) The network is secure
+				3) The network is homogeneous
+				4) The topology does not change
+				5) Latency is zero
+				6) Bandwidth is infinite
+				7) Transport cost is zero
+				8) There is one administrator
+			- These assumptions are unique to DS (These will be a huge focus in the book)
+	
+	Types of Distributed Systems:
+		- Distributed Computing Systems:
+			- important class of DS is the one for high-performance computing tasks. A distinction can be made between 2 subgroups:
+				- In cluster computing the underlying hardware consists of a collection of similar workstations or PCs, closely connected in a high speed LAN. Each node runs the same OS
+				- Grid computing consists of DSs that are often constructed as a federation of computer systems, where each system can fall under a different administration domain,
+				  meaning different hardware, programs, network tech, ect
+			- Cluster computing:
+				- became popular when price/performance raito of PCs and workstations improved. Used for parallel programming where a single intensive program is ran in parallel on
+				  multiple machines. Remember Beowulf clusters. The collection is typically controlled by a master node. The master handles the allocation of nodes, maintains a batch
+				  queue of submitted jobs, and provides an interface for the users. The master runs the middleware needed for the programs and management of the cluster.
+				- An important part of the middlware is formed by the libraries for executing parallel programs. Typically only provide advanced message-based communication
+				  facilities, but cannot handle faulty messages, secutiry, ect
+				- This is a homogeneous system (same OS and near identical hardware)
+			- Grid computing:
+				- has a high degree of heterogeneity: no assumptions are made concerning hardware, OS, networks, administrative domains, security policies, ect
+				- key issue is resources come from different organizations and are brough together to allow those organizations to collaborate (it can end poorly). People that are apart
+				  of an organization have access to their stuff on the grid, but not others (collaboration...). Much of the software for grid computing evolves around providing access
+				  to resources from different administrative domans, and to only users and applications that belong to a specific orgranization. Focus is on architectural issues
+				- Architecture (composed of 4 layers:
+					1) The lowest is the fabric layer, which provides interfaces to local resources at a specific site. Tailored to allow sharing of resources within an orgranization.
+					2a) The connectivity layer consists of communication protocols for supporting grid transactions that span over multiple resources. Transactions are needed to
+					    transfer data between resources or to access a resource from a remote location. Contains security protocols
+					2b) The resource layer is responsible for managing a single resource. Uses functions from the connectivity layer and calls directly the interfaces from the fabric layer.
+					    This is responsible for access control and will rely on the authentication performed as part of the connectivity layer
+					3) The collective layer deals with handling access to multiple resources and consists of services for resource discovery, allocation and scheduling of tasksonto multiple
+					   resources, data replication and so on. This layer consits of many protocols unlike the connectivity and resource layer. 
+					4) The application layer consists of applications that operate within a specific organization and make use of the grid computing environment. 
+			- Cloud computing:
+				- it has become another buzzword after Web 2.0
+				- won't compute on local pcs, but on centralized facilities operated by 3rd part compute and storage utilities
+				- Definition: A large scal distributed computing paradigm that is driven by economies of scale, in which a pool of abstracted, virtualized dynamically-scalable, managed computing
+				  power, storage, platforms, and services are delivered opn demand to external customers over the Internet.
+				- Not a new concept; it has intricate connection tot he relatively new but 13 year established grid computing paradigm, and other relevent technologies such as utility computing,
+				  cluster computing, and DSs in general
