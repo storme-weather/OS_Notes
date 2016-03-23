@@ -101,3 +101,52 @@ Chapter 1 (Introduction)
 				  power, storage, platforms, and services are delivered opn demand to external customers over the Internet.
 				- Not a new concept; it has intricate connection tot he relatively new but 13 year established grid computing paradigm, and other relevent technologies such as utility computing,
 				  cluster computing, and DSs in general
+		- Distributed Information Systems:
+			- found in organizations that were confronted with a wealth of networked apps, but cannot be interpolated easily. The existing middleware solutions are the result of working with an 
+			  infrastructure which it is easier to integrate apps into an enterprise-wide info system.
+			- can distringuish severa; layers wher eintegration takes place. A networked application consisted of a server running that application and making it available to remote clients. 
+			  Clients could send a request to the server for executing an operation, and a response would be sent back. Integration at the lowest level allows clients to wrap a number of requests 
+			  into a single request and have it executed as a distributed transaction. This makes it to where all transactions are executed or none.
+			- applications became more sophisticated and were broken into components. Integration started taking place by letting applications communicate directly. Concentrate on two forms of DSs
+			- Transaction Processing Systems:
+				- using transactions requires special primitives that must be supplied by the DS or by the language runtime system. 
+				- Primitive transaction list:
+					- BEGIN_TRANSACTION: mark the start of a transaction
+					- END_TRANSACTION: terminate the transaction and try to commit
+					- ABORT_TRANSACTION: Kill the transaction and restore the old values
+					- READ: read data from a file/table/otherwise
+					- WRITE: write data to a file/table/otherwise
+				- Remote procedure calls (RPCs) are encapsulated in a transaction, known as transactional RPC.
+				- Begin and end transaction are used to delimit the scope of a transaction. The operations between them form the body of the transaction. Either all the operations are 
+				  executed or none at all. 
+				- The all or nothing property is one of the 4 characteritic properties transactions have:
+					1) atomic: to the outside world, the transaction happens indivisibly
+					2) Consistent: the transaction does not violate system invariants
+					3) Isolated: Concurrent transactions do not interfere with each other
+					4) Durable: once a transaction commits, the changes are permanent
+				- The atomic property ensures that the entire transaction is ran, or not all
+				- The consistent property ensures the system has certain invariants that must always hold true.
+				- The isolated property ensures that if 2 transactions are running at the same time, the final results looks as if all transactions ran sequentially
+				- The durable property ensures that once a transaction has committed, the results are permanent. 
+				- There are also nested transactions, which have some number of subtransactions. The top-level transaction can fork off children in parallel with one another on different 
+				  machines. A child can execute one or more subtransactions
+				- A problem can exist in nested transactions where a subtransaction can commit, but the parent is aborted. This means that small piece of data is altered when it wasn't 
+				  supposed to be. 
+				- A way to get around this issue is to give each transaction a copy of the data, and it won't replace the real data until it commits (subtransactions replace the parent 
+				  transactions data)
+				- Nested transactions provide a way to distributing a transactions across multiple machines. Basically, have a subtransaction for each machine we speak to.
+			- Enterprise Application Integration:
+				- as more applications are decoupled from DBs, needed to start integrating applications independent from their DBs. Application components should able to communicate 
+				  diretly instead of through transactions
+				- a component can send a local procedure call to another if they want to communicate. Kind of like a message.
+				- RMI can be used like a RPC except that it operates on objects instead of applications
+				- RPC and RMI have an issue where the caller and callee bother need to be up and running while communicating. They also need to know how to refer to each other. This led 
+				  to the creation of message-orientated middleware (MOM).
+				- With MOM, applications end messages to logical contact points, described by means of a subject. Applications can indicate their interest for a specific message type, 
+				  which the communicate middleware will ensure the messages are delivered to those applications. This is known as publish/subscribe system.
+		- Distributed Pervasive Systems:
+			- Thus far only discussed DSs that are characterized by their stability: nodes are fixed and have permanent and high-quality connection to a network. This is done through achieving 
+			  distribution transparency. 
+			- Have DSs where instability is the default behavior. There are known as Distributed Pervasive Systems, and are characterized by being small, battery-powered, mobile, or a 
+			  wireless connection. These characteristics do not need to be restrictive.
+
