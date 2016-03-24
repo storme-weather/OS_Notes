@@ -149,4 +149,35 @@ Types of Distributed Systems:
 		  distribution transparency. 
 		- Have DSs where instability is the default behavior. There are known as Distributed Pervasive Systems, and are characterized by being small, battery-powered, mobile, or a 
 		  wireless connection. These characteristics do not need to be restrictive.
-
+		- Important feature of distributed pervasive systems is the lack of human admin control. At best they are configured by the owners, but they need to automatically discover their 
+		  enviornment and "nestle in" as best as possible. 
+		- Nestling has been more precise due to the 3 requirements:
+			1) Embrace contextual changes
+			2) Encourage ad hoc composition
+			3) Recognize sharing as the default
+		- Embracing contextual changes means a device must be continuously be aware that its enviornment may change all the time. Example being that a network has changed on the device. We will 
+		  need it to react to connect to a new netowrk
+		- Encouraging ad hoc composition is that many devices will be used in different ways byt different users, so it should be easy to configure
+		- Recognizing sharing as the default means making information easy to read, write, and share
+		- Home Systems:
+			- very popular type of pervasive system, and the least constrained due to home networks. Typically they are PCs, tvs, gaming devices, ect. 
+			- such a systemneeds to be self-configuring and self-managing. The end-users should not be expected to keep this up to date due to the errors they can cause.
+			- This is done usually through the devices obtaining their own IP addresses and discovering each other. 
+			- Another issue is personal space, meaning other components on the system can see parts of other components, but not everything automatically (no idea of privacy)
+		- Electronic Health Care Systems:
+			- often equupped with various sensors organized in a body-area network BAN. 
+			- at worst minimally hinder a person, so operate while a person moves with no strings attached to immobile devices.
+			- Central hub part of the BAN and collects data as needed. Occasionally the data is offloaded to a storage device.
+			- confronted with the following questions:
+				1) Where and how should monitored data be stored?
+				2) how to prevent loss of crucial data?
+				3) Infrastructure needed to generate and propagate alerts?
+				4) How can physicians provide online feedback?
+				5) How can extreme robustness of the montioring system be realized?
+				6) What are the security issues and how can proper policies be enforced?
+			- for efficiency, devices and BANs will require to support in-network data processing, meaning the data has to be aggregated before permanently storing the data
+		- Sensor Networks:
+			- what make these interesting is in all cases they are used for processing information. Do more than provide communication services, which is what most traditional PCs do.
+			- Consists of tens to thousands of small nodes with each node having a sensor. Most sensor networks use wireless communication and the nodes are battery powered, so efficiency 
+			  is high on the design criteria
+			- relation to DSs is clear by considering sensor networks as distributive databases. 
