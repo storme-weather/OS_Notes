@@ -10,4 +10,24 @@ Architecture Styles:
 		2) Object-based architectures
 		3) Data-centered architectures
 		4) Event-based architectures
-	- Layered architectures: components are organized in a layered fashion where a component at layer L is allowed to call components at 
+	- Layered architectures: components are organized in a layered fashion where a component at layer L is allowed to call components at a lower layer (seems as if it has to go one at a time). The responses seem to take awhile moving one layer at a time.
+	- Object-based architectures: each object corresponds to what we have defined as a component, and they are connected through a remote procedure call mechanism. This software architecture matches the client-server system architecture.
+	- Data-centered architectures: prcoesses communicate through a common (passive or active) repository.
+		Ex) a wealth of networked applications have been developed that rely on a shared distributed file system where all communication takes place through files.
+	- Event-based architectures: processes communicate through the propagation of events, which optionally carry data. Generally associated with publish/subscribe systems. Basic idea is that processes will publish events, which the middleware ensures
+	  that only subscribed processes receive the events. Processes are loosely coupled, so they do not need to refer to each other.
+	- Event-based architectures can be combined with data-centered architectures creating  shared data spaces. Processes in shared data spaces are now decoupled in time: they both do not need to be active and many use a SQL like interface to the shared
+	  repository.
+	- Software architectures are important for DSs because they aim at achieving distribution transparency. Of course distribution transparency requires trade-offs between performance, fault tolerance, ease-of-programming, ect. 
+System Architectures:
+	- Centralized Architectures:
+		- one issue many agree upon: thinking in terms of clients that request services from servers. This helps us understnad manage the complexity of DSs
+		- Processes in a DS are divided into 2 (possibly overlapping) groups. A server is a process implementing a specific service. A client is a process that requests a service from a server by sending it a request and waiting on the
+		  server to reply. This is known as request-reply behavior
+		- Communication between a client and server can be done by a connectionless protocol when the network is fairly reliable (LANs). When a client requests a service, it packages a message for the server, identifying the service it wants along with
+		  the necessary input data. Message is sent to the server, the server processes the message, and packages the results in a reply response to the client. This has the advantage of being efficient as long as messages are not lost/corrupted.
+		  Sadly it isn't so easy to ensure the request/reply protocol works perfectly. One solution is to have the client resend the request if no response has come in after a certain amount of time. However, the client does not know if the server
+		  actually did not receive the message. Also depending on the service the client is performing, we may not want to resend the request multiple times.
+		- An alternative solution is using a reliable connection protocol. This is not appropiate for LAN due to low performance, but is good for WAN where communication is unreliable. 
+		- Application Layering:
+			- 	
