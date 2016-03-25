@@ -1,0 +1,13 @@
+Chapter 2 (Architectures)
+Architecture Styles:
+	- Consider logical organization of DSs into software components, also known as software architectures.
+	- Style of the architecture is important, and if formulated in terms of components, the way they are connected to each other, how data is exhanged between components, and how these elements are jointly configured into a system.
+	- A component is a modular unit with interfaces that are replacable wtihin its enviornment. 
+	- Important issue about a component for DSs is they can be replaced if we respect their interfaces. 
+	- More difficult concept is a connector, which mediates communication, coordination, or cooperation among components
+	- Several styles for various configurations of components and connectors:
+		1) Layered architectures
+		2) Object-based architectures
+		3) Data-centered architectures
+		4) Event-based architectures
+	- Layered architectures: components are organized in a layered fashion where a component at layer L is allowed to call components at 
