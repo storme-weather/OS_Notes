@@ -2,7 +2,7 @@ Chapter 1 (Introduction)
 Goals:
 	Scalability:
 		- Three different dimensions of scalability for DS:
-			- scalable with respect to tis size, meaning we can easily add more users and resources to the system
+			- scalable with respect to its size, meaning we can easily add more users and resources to the system
 			- geographically scalable system is one in which the users and resources may lie far apart
 			- administratively scalable, meaning it can still be easy to maange even if it spans many independent administrative organizations
 		- If a sytem is scalable in one or more of these dimensions, then it often exhibits lose of performance when the system scales

@@ -1,7 +1,8 @@
 Chapter 2 (Architectures)
 Architecture Styles:
 	- Consider logical organization of DSs into software components, also known as software architectures.
-	- Style of the architecture is important, and if formulated in terms of components, the way they are connected to each other, how data is exhanged between components, and how these elements are jointly configured into a system.
+	- Style of the architecture is important, and if formulated in terms of components, the way they are connected to each other, how data is exhanged between components, and how these elements are 
+	  jointly configured into a system.
 	- A component is a modular unit with interfaces that are replacable wtihin its enviornment. 
 	- Important issue about a component for DSs is they can be replaced if we respect their interfaces. 
 	- More difficult concept is a connector, which mediates communication, coordination, or cooperation among components
@@ -10,24 +11,101 @@ Architecture Styles:
 		2) Object-based architectures
 		3) Data-centered architectures
 		4) Event-based architectures
-	- Layered architectures: components are organized in a layered fashion where a component at layer L is allowed to call components at a lower layer (seems as if it has to go one at a time). The responses seem to take awhile moving one layer at a time.
-	- Object-based architectures: each object corresponds to what we have defined as a component, and they are connected through a remote procedure call mechanism. This software architecture matches the client-server system architecture.
+	- Layered architectures: components are organized in a layered fashion where a component at layer L is allowed to call components at a lower layer (seems as if it has to go one at a time). The 
+	  responses seem to take awhile moving one layer at a time.
+	- Object-based architectures: each object corresponds to what we have defined as a component, and they are connected through a remote procedure call mechanism. This software architecture matches 
+	  the client-server system architecture.
 	- Data-centered architectures: prcoesses communicate through a common (passive or active) repository.
 		Ex) a wealth of networked applications have been developed that rely on a shared distributed file system where all communication takes place through files.
-	- Event-based architectures: processes communicate through the propagation of events, which optionally carry data. Generally associated with publish/subscribe systems. Basic idea is that processes will publish events, which the middleware ensures
-	  that only subscribed processes receive the events. Processes are loosely coupled, so they do not need to refer to each other.
-	- Event-based architectures can be combined with data-centered architectures creating  shared data spaces. Processes in shared data spaces are now decoupled in time: they both do not need to be active and many use a SQL like interface to the shared
-	  repository.
-	- Software architectures are important for DSs because they aim at achieving distribution transparency. Of course distribution transparency requires trade-offs between performance, fault tolerance, ease-of-programming, ect. 
+	- Event-based architectures: processes communicate through the propagation of events, which optionally carry data. Generally associated with publish/subscribe systems. Basic idea is that processes 
+	  will publish events, which the middleware ensures that only subscribed processes receive the events. Processes are loosely coupled, so they do not need to refer to each other.
+	- Event-based architectures can be combined with data-centered architectures creating  shared data spaces. Processes in shared data spaces are now decoupled in time: they both do not need to be 
+	  active and many use a SQL like interface to the shared repository.
+	- Software architectures are important for DSs because they aim at achieving distribution transparency. Of course distribution transparency requires trade-offs between performance, fault tolerance, 
+	  ease-of-programming, ect. 
 System Architectures:
 	- Centralized Architectures:
 		- one issue many agree upon: thinking in terms of clients that request services from servers. This helps us understnad manage the complexity of DSs
-		- Processes in a DS are divided into 2 (possibly overlapping) groups. A server is a process implementing a specific service. A client is a process that requests a service from a server by sending it a request and waiting on the
-		  server to reply. This is known as request-reply behavior
-		- Communication between a client and server can be done by a connectionless protocol when the network is fairly reliable (LANs). When a client requests a service, it packages a message for the server, identifying the service it wants along with
-		  the necessary input data. Message is sent to the server, the server processes the message, and packages the results in a reply response to the client. This has the advantage of being efficient as long as messages are not lost/corrupted.
-		  Sadly it isn't so easy to ensure the request/reply protocol works perfectly. One solution is to have the client resend the request if no response has come in after a certain amount of time. However, the client does not know if the server
+		- Processes in a DS are divided into 2 (possibly overlapping) groups. A server is a process implementing a specific service. A client is a process that requests a service from a server by 
+		  sending it a request and waiting on the server to reply. This is known as request-reply behavior
+		- Communication between a client and server can be done by a connectionless protocol when the network is fairly reliable (LANs). When a client requests a service, it packages a message for 
+		  the server, identifying the service it wants along with the necessary input data. Message is sent to the server, the server processes the message, and packages the results in a reply 
+		  response to the client. This has the advantage of being efficient as long as messages are not lost/corrupted. Sadly it isn't so easy to ensure the request/reply protocol works perfectly. 
+		  One solution is to have the client resend the request if no response has come in after a certain amount of time. However, the client does not know if the server
 		  actually did not receive the message. Also depending on the service the client is performing, we may not want to resend the request multiple times.
 		- An alternative solution is using a reliable connection protocol. This is not appropiate for LAN due to low performance, but is good for WAN where communication is unreliable. 
 		- Application Layering:
-			- 	
+			- how to draw a distinction between a client and server, and there really isn't a clear distinction. This is the main issue of the client-server model.
+			- Use three levels to get around this:
+				1) User-interface level
+				2) The processing level
+				3) The data level
+			- User-interface level contains everything that is necessary to interface with the user, such as display management. Clients typically implement this interface. This layer has the 
+			  programs that interact with applications.
+				- Ex) simple user-interfaces such as a character-based screen (mainframe enviornments).
+				- Ex) there are more advanced ones that contain a GUI for the user
+			- The processing level contains the applications. This is the middle level that contains the main functionality of an application. Not many aspects to this level
+				- Ex) Imagine an Internet search engine. The processing level transforms the query supplied by the user and queries the DB containing the websites. Also orders the results.
+				- Ex) Consider a desktop package that has several applications (microsoft office). The processing level consists of a relatively large collection of programs, each having 
+				      simple processing capabilities.
+			- The data level manages the actual data being acted on by the applications. Data is often persistent, meaning the data will be stored for the next use. Typically done on the server 
+			  side. Keep data consistent across all the applications. 
+				- Ex) file-system or a database
+		- Multitiered Architectures
+			- The simpliest organization is to only have 2 types of machines:
+				1) Client machine containing only the programs implementing the user-interface level
+				2) server machine containing the programs implementing the processing and data level
+			- In this organization, everything is handled by the server where the client is like a dumb terminal. 
+			- Another approach for organizing the clients and servers is to distribute the programs in the application layers of the previous section across different machines.
+			- One possible organization is to only have the terminal-dependent part of the user interface on the client machine. Give the applications remote control over the presentation of 
+			  their data
+			- Alternative is to place the user-interface software on the client side (java applets). Also move part of application to the front end. An example having the client side validating 
+			  a form. 
+			- A popular client-server enviornment is where the client machine is a PC/work station, connected through a network to a distributed file system or database. Basically most of the 
+			  application is running on the client machine, but all operations on files or db entries go to the server.
+			- Three-tiered architecture: in the organization of web sites. Web server acts as an entry point to a site, passing requests to an application server where the actual processing takes 
+			  place. The application server interacts with a db server. Application server may be responsible for running the code to inspect the available inventory of some goods offered by an 
+			  online bookstore. May need to interact with a db containing the raw inventory data.
+	- Decentralized Architectures:
+		- Multitiered client-server architectures are a consequence of dividing applications into a user, processing, and data level. This is known as a vertical distribution. The 
+		  characteristic feature of vertical distribution is placing logically different components on different machines. Related to vertical fragmentation as used in distributed 
+		  relational dbs where the tables are split column-wise and distributed across multiple machines.
+		- An advantage to vertical distribution are the functions are logically and physically split across multiple machines where each machine is tailored to a specific group of functions.
+		- There is also horizontal distribution where a client or server may be physically split up into logically equivalent parts, but each part is operating on its own share of the data 
+		  set, thus balancing the load.
+		- Horizontal distribution is known as peer to peer architecture. The processes in this system are all equal. The functions that need to be carried out are represented by every process 
+		  that constitutes a DS. Much of the interaction between processes is symmetric, meaning each process will act as a client and a server at the same time. Giving this symmetric behavior, 
+		  P2P evolve around how to organize the proceses in an overlay network, which is a network in which the nodes are formed by the processes and the links represent the possible communication 
+		  channels. A process can't communicate directly with another process, but is required to send messages through the available communication channels. 
+		- 2 types of overlay networks exist: those that are structured and those that are not. 
+		- Structured P2P Architectures:
+			- overlay network is constructed using a deterministic procedure. The most-used procedure is to organize the processes through a distributed hash table (DHT). In a DHT based system, 
+			  data items are assigned a random key from a large identifier space. Nodes in the system are assigned a random number from the same identifier space.
+			- The crux of a DHT based system is to implement an efficient and deterministic scheme that uniquely maps the key of a data item to the identifier of a node based on some distance 
+			  metric. When looking up a data item, the network address of the node responsible for that data item is returned. This is done by routing a request for a data item to the 
+			  responsible node.
+				Ex) A chord system has nodes that are logically organized in a ring such that a data item with key k is mapped to the node with the smallest identidier id ~ k. This node is 
+				    referred as the successor of key k and denoted as succ(k). To look up a data item, an application running on an arbitrary node would call a function known as LOOPUP(k), 
+				    which would return the network address of succ(k). Application can contact the node to obtain a copy of the data item.
+			- Nodes organize themselves into a membership management. Lookup of a key does not follow the logical organization of a ring. Each node will maintain shortcuts to other nodes where 
+			  lookups can be done in O(n log n). n is the number of nodes in the overlay.
+			- When a node wants to join a Chord, it starts with generating a random identifier id. The node can simply do a lookup on the id whic returns the network address of succ(id). The 
+			  joining node can simply contact succ(id) and its predecessor and insert itself in the ring. This scheme requires each node also stores information on its predecesor. Insertion 
+			  yields that each data item whose key is now associated with node id, is transferred from succ(id).
+			- Leaving is just as simple. Node id informs its departure to its predecessor and successor, and transfers in data items to succ(id).
+		- Unstructured P2P Architectures:
+			- This architecture relies on randomized algorithms for constructing an overlay network. Main idea is each node maintains a list of neighbors, but this list is constructed in a random way. Data items are assumed to be randomly placed on nodes. When a node needs to locate a specific data item, it can only effectively flood the network with a search query. 
+			- One of the goals of an unstructured P2P system is to construct the overlay network as a random graph. Basic model is each node maintains a list of c neighbors where each of these neighbors represents a randomly chosen live node from the current set of nodes. The list of neighbors is also referred as a partial view. 
+			- Many ways to construct a partial view. There is a framework that captures many different algorithms for overlay construction to allow for evaluations and comparison. It is assumed that nodes regularly exchange extries from their partial view. Each entry identifies another node in the network, and has an associated age that states how old the reference to that node is. 2 threads are used.
+			- The active thread takes the initiative to communicate with another node. It selects that node from its current partial view. Assuming entries need to be pushed to the selected peer, it continues by constructing a buffer containing c/2 + I entries, including an entry identifying itself.
+			- The peer in the meantime will also have constructed a buffer by means the passive thread whose activities strongly resemble that of the active thread.
+			- Crucial point is the construction of a new partial view. This will contain exectly c entries, which will come from received buffer. There are 2 ways to construct the new view. First, the 2 nodes may decide to discard the entries they had sent to each other. This means they will swap part of their original views. The 2nd approach is to discard as many old entries as possible. The 2 approaches are conplementary . Many membership management protocols for unstructured overlays fit this framework. 
+		- Superpeers:
+			- in unstructured p2p systems, locating relevent data items can become problematic as the system grows. The scalability issue comes from not having a deterministic way of routing a lookup request to a specific data item. The only technique a node can resort to is flooding the request. Various ways which flooding can be dammed.
+			- Other situations which abandoning the symmetric nature of P2P systems is sensible. Consider a collaboration of nodes that offer resources to each other. In a collaborative content delivery network (CDN), nodes may offer storage for hosting copies of Web pages allowing web clients to access pages nearby, and thus to access them quickly. The node P may need to seek for resources in a part of the network. Making use of a broker that collects resource usage for a number of nodes that are in each other's proximity will allow quick selection of a node with sufficient resources.
+			- nodes maintain an index or act as a broker are referred as superpeers. Often organized to a P2P network leading to a hierarchical organization. A simple example is having regular peers connected as a client to a superpeer. All communication from and to a regular peer proceeds through that peer's associated superpeer.
+			- The client-superpeer relation is fixed whenever a regular peer joins the network. It attaches to one of the superpeers and remains attached until it leaves the network. It is expected that superpeers are long-lived processes with a high availability. To compensate for unstable behavior of a superpeer, backup schemes can be deployed, such as pairing every superpeer with another one and requireing clients to attach to both
+			- having a fixed association with a superpeer may not always be the best solution. For example, the case of file-sharing networks may be better for a client to attach to a superpeer that maintains an index of files the client is generally interested in. Chances are bigger that when a client is looking for a specific file, its superpeer will know where to find it.
+			- P2P networks offer a flexible means for nodes to join and leave the network. With superpeer networks a new problem is introduced, namely how to select the nodes that are eligible to become superpeer.
+	- Hybrid Architectures:
+		-
