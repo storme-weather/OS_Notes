@@ -94,18 +94,94 @@ System Architectures:
 			  yields that each data item whose key is now associated with node id, is transferred from succ(id).
 			- Leaving is just as simple. Node id informs its departure to its predecessor and successor, and transfers in data items to succ(id).
 		- Unstructured P2P Architectures:
-			- This architecture relies on randomized algorithms for constructing an overlay network. Main idea is each node maintains a list of neighbors, but this list is constructed in a random way. Data items are assumed to be randomly placed on nodes. When a node needs to locate a specific data item, it can only effectively flood the network with a search query. 
-			- One of the goals of an unstructured P2P system is to construct the overlay network as a random graph. Basic model is each node maintains a list of c neighbors where each of these neighbors represents a randomly chosen live node from the current set of nodes. The list of neighbors is also referred as a partial view. 
-			- Many ways to construct a partial view. There is a framework that captures many different algorithms for overlay construction to allow for evaluations and comparison. It is assumed that nodes regularly exchange extries from their partial view. Each entry identifies another node in the network, and has an associated age that states how old the reference to that node is. 2 threads are used.
-			- The active thread takes the initiative to communicate with another node. It selects that node from its current partial view. Assuming entries need to be pushed to the selected peer, it continues by constructing a buffer containing c/2 + I entries, including an entry identifying itself.
+			- This architecture relies on randomized algorithms for constructing an overlay network. Main idea is each node maintains a list of neighbors, but this list is constructed in a random way. 
+			  Data items are assumed to be randomly placed on nodes. When a node needs to locate a specific data item, it can only effectively flood the network with a search query. 
+			- One of the goals of an unstructured P2P system is to construct the overlay network as a random graph. Basic model is each node maintains a list of c neighbors where each of these 
+			  neighbors represents a randomly chosen live node from the current set of nodes. The list of neighbors is also referred as a partial view. 
+			- Many ways to construct a partial view. There is a framework that captures many different algorithms for overlay construction to allow for evaluations and comparison. It is assumed 
+			  that nodes regularly exchange extries from their partial view. Each entry identifies another node in the network, and has an associated age that states how old the reference to that node 
+			  is. 2 threads are used.
+			- The active thread takes the initiative to communicate with another node. It selects that node from its current partial view. Assuming entries need to be pushed to the selected peer, it 
+			  continues by constructing a buffer containing c/2 + I entries, including an entry identifying itself.
 			- The peer in the meantime will also have constructed a buffer by means the passive thread whose activities strongly resemble that of the active thread.
-			- Crucial point is the construction of a new partial view. This will contain exectly c entries, which will come from received buffer. There are 2 ways to construct the new view. First, the 2 nodes may decide to discard the entries they had sent to each other. This means they will swap part of their original views. The 2nd approach is to discard as many old entries as possible. The 2 approaches are conplementary . Many membership management protocols for unstructured overlays fit this framework. 
+			- Crucial point is the construction of a new partial view. This will contain exectly c entries, which will come from received buffer. There are 2 ways to construct the new view. First, 
+			  the 2 nodes may decide to discard the entries they had sent to each other. This means they will swap part of their original views. The 2nd approach is to discard as many old entries as 
+			  possible. The 2 approaches are conplementary . Many membership management protocols for unstructured overlays fit this framework. 
 		- Superpeers:
-			- in unstructured p2p systems, locating relevent data items can become problematic as the system grows. The scalability issue comes from not having a deterministic way of routing a lookup request to a specific data item. The only technique a node can resort to is flooding the request. Various ways which flooding can be dammed.
-			- Other situations which abandoning the symmetric nature of P2P systems is sensible. Consider a collaboration of nodes that offer resources to each other. In a collaborative content delivery network (CDN), nodes may offer storage for hosting copies of Web pages allowing web clients to access pages nearby, and thus to access them quickly. The node P may need to seek for resources in a part of the network. Making use of a broker that collects resource usage for a number of nodes that are in each other's proximity will allow quick selection of a node with sufficient resources.
-			- nodes maintain an index or act as a broker are referred as superpeers. Often organized to a P2P network leading to a hierarchical organization. A simple example is having regular peers connected as a client to a superpeer. All communication from and to a regular peer proceeds through that peer's associated superpeer.
-			- The client-superpeer relation is fixed whenever a regular peer joins the network. It attaches to one of the superpeers and remains attached until it leaves the network. It is expected that superpeers are long-lived processes with a high availability. To compensate for unstable behavior of a superpeer, backup schemes can be deployed, such as pairing every superpeer with another one and requireing clients to attach to both
-			- having a fixed association with a superpeer may not always be the best solution. For example, the case of file-sharing networks may be better for a client to attach to a superpeer that maintains an index of files the client is generally interested in. Chances are bigger that when a client is looking for a specific file, its superpeer will know where to find it.
+			- in unstructured p2p systems, locating relevent data items can become problematic as the system grows. The scalability issue comes from not having a deterministic way of routing a lookup 
+			  request to a specific data item. The only technique a node can resort to is flooding the request. Various ways which flooding can be dammed.
+			- Other situations which abandoning the symmetric nature of P2P systems is sensible. Consider a collaboration of nodes that offer resources to each other. In a collaborative content delivery 
+			  network (CDN), nodes may offer storage for hosting copies of Web pages allowing web clients to access pages nearby, and thus to access them quickly. The node P may need to seek for 
+			  resources in a part of the network. Making use of a broker that collects resource usage for a number of nodes that are in each other's proximity will allow quick selection of a node 
+			  with sufficient resources.
+			- nodes maintain an index or act as a broker are referred as superpeers. Often organized to a P2P network leading to a hierarchical organization. A simple example is having regular peers 
+			  connected as a client to a superpeer. All communication from and to a regular peer proceeds through that peer's associated superpeer.
+			- The client-superpeer relation is fixed whenever a regular peer joins the network. It attaches to one of the superpeers and remains attached until it leaves the network. It is expected 
+			  that superpeers are long-lived processes with a high availability. To compensate for unstable behavior of a superpeer, backup schemes can be deployed, such as pairing every superpeer 
+			  with another one and requireing clients to attach to both
+			- having a fixed association with a superpeer may not always be the best solution. For example, the case of file-sharing networks may be better for a client to attach to a superpeer 
+			  that maintains an index of files the client is generally interested in. Chances are bigger that when a client is looking for a specific file, its superpeer will know where to find it.
 			- P2P networks offer a flexible means for nodes to join and leave the network. With superpeer networks a new problem is introduced, namely how to select the nodes that are eligible to become superpeer.
 	- Hybrid Architectures:
-		-
+		- This section focuses on client-server solutions that are combined with decentralized architectures
+		- Edge-Server Systems:
+			- These are deployed on the internet where servers are placed at the edge of the network. The edge is formed by the boundry between enterprise networks and the internet.
+			- Ex) Users connecting to the internet through their ISP. The ISP is considered the edge in this example
+			- End users/clients connect to the internet by an edge server. The edge server's main purpose is to serve content. A collection of edge servers can be used to optimize content and application
+			  distribution.
+			- One edge server acts as an origin server where all content originates. That server uses other edge servers for replicatying web pages and other things
+		- Collaborative Distributive Systems:
+			- Hybrid structures are notably deployed in collaborative DSs. The main issue is often just getting started. Once a node has joined the system, it can use a fully decentralized schene for collaboration.
+			- Consider the BitTorrent file sharing system. BitTorrent is a P2P file downloading system. When an end user is looking for a file, they will download chunks of the file from other users until a
+			  complete file is assembled. Something to point out is the collaboration needed to complete the file (needing various users). Most users will only download, but some systems will force you to share,
+			  so you are a productive member of the community :). 
+			- To continue on the BitTorrent example, a user needs to access a global directory. This directory contains references to files that are needed to download a specific file. It refers to what is known
+			  as a tracker, which is a server that is keeping an accurate count of active nodes that have chunks of the requested file. An active node is one that is currently downloading another file. There
+			  will be many different trackers, but generally there is only one tracker per file.
+			- Once the nodes have been identified, the downloading node becomes active. It weill be forced to help others by providing chunks of the file that others do not have. This enforcement comes from a
+			  simple rule: If node P notices that node Q is downloading more than it is uploading, P can decide to decrease the rate at which it sends data to Q. This scheme works well provided P has something
+			  to download from Q. Nodes are often supplied with references to many other nodes, so they are placed in a better position to trade data.
+			- BitTorrent combines centralized and decentralized solutions. The bottleneck of the system is formed by the trackers
+- Architectures vs Middleware
+	- Where does the middleware fit in? As a reminder, middleware forms a layer between applications and distributed platforms. An important purpose of middleware is to provide a degree of distribution transparency, which
+	  is to a certain extent hiding the distribution of data, processing, and control from applications
+	- Middleware systems follow a specific architectural style known as the object-based architectural style. 
+	- Having middleware following a specific style has the benefit of designing applications becomes easier. A drawback is that middleware may not be optimal for what the application developer had in mind. Early
+	  object-based architectures had restrictive interactions, so messaging was added, Adding new features causes the middleware to be bloated.
+	- Specific solutions should be adaptable to application requirements. One solution is to make several versions of a middleware system, where each is tailored to a specific class of applications. A better approach
+	  is to make middleware systems easy to configure, adapt, and customize as needed by an application. Because of this, systems are now developed where a stricter separation between policies and mechanisms is being
+	  made. The led to several mechanisms which the behaivor of middleware can eb modified.
+	- Interceptors:
+		- An interceptor is a software construct that will break the usual flow of control and allow other code to be executed. 
+		- Making interceptors generic may require a substantial implementation effort, and it is unclear if generality is preferred over restricted applicability and simplicity. Having limited interception
+		  facilities will improve management of the software and the DS as a whole
+		- Consider interception as supported in many object-based DSs. The basic idea: object A can call a method that belong to object B, while object B lives in a different machine. A remote-object invocation
+		  is done as a 3 step approach:
+		  	1) Object A is offered a local interface that is exactly the same the interface offered by object B. A calls the method available in that interface
+			2) The call by A is transformed into a generic object invocation, made possible through a general object-invocation interface offered by the middleware at the machine where A resides
+			3) The generic object invocation is transformed into a message that is sent through the transport-level network interface as offered by A's local OS.
+		- After the first step, B.do_Something() is transformed into a generic call with a reference to B's method and the parameters that go with the call. Imagine object B is replicated. Each replica should be
+		  invoked. This is where interception helps. What the request-level interceptor will do is call the invoked replicas. Object A does not need to be aware of the replication of object B, but the object
+		  middleware doesn't need special components that deal with the replicated call. Only the request-level interceptor needs to be aware of the replication
+		- A call to the remote object will be sent over the network. This means the messaging interface as offered by the local OS will need to be invoked. A message-level interceptor may assist in transferring the
+		  invocation to the target object. 
+	- General Approaches to Adaptive Software:
+		- Interceptors actually offer a means to adapt the middleware. This is needed due to applications continuously changing. Rather than making applications responsible for reacting to changes, consider doing this
+		  in the middleware instead
+		- The strong influences from the environment have many middleware designers consider the construction of adaptive software. Adaptive software has been too successful. 
+		- 3 basic techniques to software adaptation:
+			1) Separation of concerns
+			2) Computational reflection
+			3) Component-based design
+		- Separating concerns relates to modularizing systems: separate the parts that implement functionality from those that take of other things such as reliability, performance, security, ect. Developing middleware
+		  is mainly about handling extra functionalities by means of modularization.
+			- Ex) putting security into a separate module is not going to work. Hard to imagine fault tolerance can be isolated into a separate box and sold as an independent service. Separating and subsequently
+			      weaving these cross-cutting concerns into a DS is the major theme addressed by aspect-oriented software developmenmt. This has not been successful when applied to large-scal DSs, and can be
+			      expected that there is a long ways to go before it happens
+		- Computational reflection refers to the ability of a program to inspect itself and adapt its behavior. Reflection has been built for runtime modifications (think Java reflection). Some middleware systems provide
+		  the means to apply reflective techniques. However, reflective middleware has not proven to be a powerful tool to manage the complexity of large-scale DSs. It hasn't been done yet.
+		- Component-based design supports adaptation through composition. A system can be configured statically at design time, or dynamically at run time. Dynamic requires late binding, a techinque that has been
+		  successful in programming language enviornments, but also for OSs where modules can be loaded and unloaded at will. This is still complex for DSs, especially when that replacement of one component requires
+		  knowing what the effect of that replacement on other components will be. Components are typically not independent.
+	- Discussion:
+		- 
