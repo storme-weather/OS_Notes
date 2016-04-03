@@ -82,10 +82,10 @@ Types of Distributed Systems:
 			- This is a homogeneous system (same OS and near identical hardware)
 		- Grid computing:
 			- has a high degree of heterogeneity: no assumptions are made concerning hardware, OS, networks, administrative domains, security policies, ect
-			- key issue is resources come from different organizations and are brough together to allow those organizations to collaborate (it can end poorly). People that are apart
+			- key issue is resources come from different organizations and are brought together to allow those organizations to collaborate (it can end poorly). People that are apart
 			  of an organization have access to their stuff on the grid, but not others (collaboration...). Much of the software for grid computing evolves around providing access
 			  to resources from different administrative domans, and to only users and applications that belong to a specific orgranization. Focus is on architectural issues
-			- Architecture (composed of 4 layers:
+			- Architecture (composed of 4 layers):
 				1) The lowest is the fabric layer, which provides interfaces to local resources at a specific site. Tailored to allow sharing of resources within an orgranization.
 				2a) The connectivity layer consists of communication protocols for supporting grid transactions that span over multiple resources. Transactions are needed to
 				    transfer data between resources or to access a resource from a remote location. Contains security protocols
@@ -97,14 +97,14 @@ Types of Distributed Systems:
 		- Cloud computing:
 			- it has become another buzzword after Web 2.0
 			- won't compute on local pcs, but on centralized facilities operated by 3rd part compute and storage utilities
-			- Definition: A large scal distributed computing paradigm that is driven by economies of scale, in which a pool of abstracted, virtualized dynamically-scalable, managed computing
+			- Definition: A large scale distributed computing paradigm that is driven by economies of scale, in which a pool of abstracted, virtualized dynamically-scalable, managed computing
 			  power, storage, platforms, and services are delivered opn demand to external customers over the Internet.
 			- Not a new concept; it has intricate connection tot he relatively new but 13 year established grid computing paradigm, and other relevent technologies such as utility computing,
 			  cluster computing, and DSs in general
 	- Distributed Information Systems:
 		- found in organizations that were confronted with a wealth of networked apps, but cannot be interpolated easily. The existing middleware solutions are the result of working with an 
 		  infrastructure which it is easier to integrate apps into an enterprise-wide info system.
-		- can distringuish severa; layers wher eintegration takes place. A networked application consisted of a server running that application and making it available to remote clients. 
+		- can distringuish several layers where integration takes place. A networked application consisted of a server running that application and making it available to remote clients. 
 		  Clients could send a request to the server for executing an operation, and a response would be sent back. Integration at the lowest level allows clients to wrap a number of requests 
 		  into a single request and have it executed as a distributed transaction. This makes it to where all transactions are executed or none.
 		- applications became more sophisticated and were broken into components. Integration started taking place by letting applications communicate directly. Concentrate on two forms of DSs
@@ -140,7 +140,7 @@ Types of Distributed Systems:
 			  diretly instead of through transactions
 			- a component can send a local procedure call to another if they want to communicate. Kind of like a message.
 			- RMI can be used like a RPC except that it operates on objects instead of applications
-			- RPC and RMI have an issue where the caller and callee bother need to be up and running while communicating. They also need to know how to refer to each other. This led 
+			- RPC and RMI have an issue where the caller and callee both need to be up and running while communicating. They also need to know how to refer to each other. This led 
 			  to the creation of message-orientated middleware (MOM).
 			- With MOM, applications end messages to logical contact points, described by means of a subject. Applications can indicate their interest for a specific message type, 
 			  which the communicate middleware will ensure the messages are delivered to those applications. This is known as publish/subscribe system.
@@ -161,7 +161,7 @@ Types of Distributed Systems:
 		- Recognizing sharing as the default means making information easy to read, write, and share
 		- Home Systems:
 			- very popular type of pervasive system, and the least constrained due to home networks. Typically they are PCs, tvs, gaming devices, ect. 
-			- such a systemneeds to be self-configuring and self-managing. The end-users should not be expected to keep this up to date due to the errors they can cause.
+			- such a system needs to be self-configuring and self-managing. The end-users should not be expected to keep this up to date due to the errors they can cause.
 			- This is done usually through the devices obtaining their own IP addresses and discovering each other. 
 			- Another issue is personal space, meaning other components on the system can see parts of other components, but not everything automatically (no idea of privacy)
 		- Electronic Health Care Systems:

@@ -1,0 +1,18 @@
+Chapter 3 (Processes)
+- Threads:
+	- Introduction to Threads:
+		- Important to understand processes and how processes and threads relate to each other
+		- OS keeps track of processes through a process table, which has entries to store CPU register values, memory maps, open files, privileges, ect
+		- Process is an active entity and is known as a program in execution
+		- OSs take great care to ensure a process cannot accidently or maliciously affect other processes. Multiple processes can concurrently share the same CPU, and other resources are made 
+		  transparent. The OS requires the hardware support to enforce this separation
+		- Concurrency transparency comes at a high price. Think of when a new process is created. OS must make a complete independent address space. This means context switching between independent
+		  address spaces is expendsive. 
+		- A thread executes its own piece of code, independent from other threads (like processes). However, threads do not need a high degree of concurrency transparency. A thread system maintains
+		  only the minimum amount of info to have a CPU be shared amoung several threads. This means a context switch for a thread is significantly cheaper than a context switch for a process
+		- Also it is up to the user to keep threads belonging to the same process to keep to themselves, while processes have to keep to themselves
+		- Multithreading leads to a performance gain
+		- Most important benefit in a single-threaded process is one thread can block the entire process
+		- Threads allow the user to exploit parallelism when a program is executed on a multiprocessor system.
+		- Processes require IPC to communicate with each other (shared memory or message passing). Threads share the same space, so communication is easy and cheaper for threads.
+		- Lightweight process (LWP): runs in the context of a single process
