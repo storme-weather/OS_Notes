@@ -33,7 +33,9 @@ System Architectures:
 		  response to the client. This has the advantage of being efficient as long as messages are not lost/corrupted. Sadly it isn't so easy to ensure the request/reply protocol works perfectly. 
 		  One solution is to have the client resend the request if no response has come in after a certain amount of time. However, the client does not know if the server
 		  actually did not receive the message. Also depending on the service the client is performing, we may not want to resend the request multiple times.
-		- An alternative solution is using a reliable connection protocol. This is not appropiate for LAN due to low performance, but is good for WAN where communication is unreliable. 
+		- An alternative solution is using a reliable connection protocol. This is not appropiate for LAN due to low performance, but is good for WAN where communication is unreliable. The server
+		  and client communicate on the same connection. Communication is gone once the connection is dropped. A drawback of this method is the cost of setting up and tearing down a connection
+		  is costly
 		- Application Layering:
 			- how to draw a distinction between a client and server, and there really isn't a clear distinction. This is the main issue of the client-server model.
 			- Use three levels to get around this:
@@ -48,8 +50,8 @@ System Architectures:
 				- Ex) Imagine an Internet search engine. The processing level transforms the query supplied by the user and queries the DB containing the websites. Also orders the results.
 				- Ex) Consider a desktop package that has several applications (microsoft office). The processing level consists of a relatively large collection of programs, each having 
 				      simple processing capabilities.
-			- The data level manages the actual data being acted on by the applications. Data is often persistent, meaning the data will be stored for the next use. Typically done on the server 
-			  side. Keep data consistent across all the applications. 
+			- The data level contains the programs that maintain the actual data on which the apllications operate. Data is often persistent, meaning the data will be stored for the next use. 
+			  Typically done on the server side. Keep data consistent across all the applications. 
 				- Ex) file-system or a database
 		- Multitiered Architectures
 			- The simpliest organization is to only have 2 types of machines:
