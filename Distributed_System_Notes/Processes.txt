@@ -36,8 +36,8 @@ Chapter 3 (Processes)
 				    To hide communication latencies, some browers start displaying data while it is still coming in. While the user sees the text, the browser is still working to get more data
 				    Each thread sets up a separate connection to the server and pulls data. Setting up a connection and reading data from the server can be programmed using standard blocking
 				    system calls. User should only notice delays in the display of images and such, but can still browse through the web document
-			- Another benefit to using multithreaded web browsers, where several connections can be opened simultaneously. This is important because web servers can be replicated across multiple machines meaning tons
-			  of connections can be served without a single server being overloaded
+			- Another benefit to using multithreaded web browsers, where several connections can be opened simultaneously. This is important because web servers can be replicated across multiple
+			  machines meaning tons of connections can be served without a single server being overloaded
 		- Multithreaded servers:
 			- There are benefits for multithreaded clients, but most of the benefits exists for servers.
 			- Benefits:
@@ -45,8 +45,8 @@ Chapter 3 (Processes)
 				- easier to develop servers that exploit parallelism to attain high performance
 			- to understand the benefits of threads for server code, consider the organization of a file server that occasionally blocks waiting for the disk. The file server normally waits for an 
 			  incoming request for a file operation, carries out the request, and sends back the reply. A popular organization has one thread being the dispatcher, which reads for incoming file 
-			  operations. The requests are sent by clients to an end-point, and are placed into a worker thread. Worker proceeds by performing a blocking read on the local file system, which can cause the thread to 
-			  suspend until the data is fetched. If the thread is suspended, then another thread is selected to be executed. 
+			  operations. The requests are sent by clients to an end-point, and are placed into a worker thread. Worker proceeds by performing a blocking read on the local file system, which can
+			  cause the thread to suspend until the data is fetched. If the thread is suspended, then another thread is selected to be executed. 
 			- Running our example on a single threaded machine would result in less requests being served
 			- There is one more way and that is through a finite state machine. Only one thread exists to respond to a request. If the request can be served through a cache, then good. Otherwise,
 			  go to disk. However, the thread doesn't block and records the state of the request into a table, goes onto the next message.
@@ -67,11 +67,13 @@ Chapter 3 (Processes)
 		- Virtualization takes place in 2 different ways
 			1) can build a runtime system that provides and abstract instruction set that is used for executing applications. Instructions can be interpreted, but could also be 
 			   emulated (think of WINE). This is known as a process virtual machine, stressing that virtualization is done only for a single process
-			2) provide a system that is implemented as a layer shielding the original hardware, but offering an instruction set of that same or other hardware as an interface. The interface can be provided 
-			  simultaneously to different programs. Because of this, it is possible to run multiple OS on the same machine. The layer is referred to as a virtual machine monitor (VMM). Think of 
-			  VMware as an example
+			2) provide a system that is implemented as a layer shielding the original hardware, but offering an instruction set of that same or other hardware as an interface. The interface can be 
+			   provided simultaneously to different programs. Because of this, it is possible to run multiple OS on the same machine. The layer is referred to as a virtual machine monitor (VMM). 
+			   Think of VMware as an example
 		- VMMs will become more important because of reliability and security for DS because they allow isolation of an application and its enviornment. A failure caused by an error or security attack
 		  only affect the VMM. We can remove it and fire up a new one. Also VMMs can be moved from one machine to another easily.
+		- binary translation: VMMs will translate instructions to that of the underlying machine while executing an application
+		- sensitve instructions: when VMMs trap to the original kernal (system calls or privileged instructions)
 - Clients:
 	- Networked user interfaces:
 		- major task of a client is to provide the means for users to interact with remote servers. 2 ways this can be supported:
@@ -81,9 +83,45 @@ Chapter 3 (Processes)
 			   application-neutral solution. With networked user interfaces, everyything is processed and stored on the server. This thin-client approach is getting more attention as internet 
 			   connectivity increases and hand-held become more popular. Thin-client solutions are popular as they ease the task of system management
 		- X Window System:
-			- This system is sued to control bit-mapped terminals, which include a monitor, keyboard, and mouse. X can be viewed as part of an OS that controls the terminal. Heart of the system is formed byt he X 
-			  kernal. Contains all terminal-specific device drivers and is generally highly hardware dependent.
+			- This system is sued to control bit-mapped terminals, which include a monitor, keyboard, and mouse. X can be viewed as part of an OS that controls the terminal. Heart of the system is
+			  formed by the X kernal. Contains all terminal-specific device drivers and is generally highly hardware dependent.
 			- X kernal gives a low-level interface for controlling the screen, but also for capturing keyboard and mouse events. 
 			- Good thing about X is the X kernal and applications don't need to be on the same machine. 
 		- Thin-client network computing
-			-
+			- In the X Windows system, applications manipulate a display using specific commands offered by X. These commands are sent over the network where they are executed byt he X kernal.
+			  Applications written for X should use separate application logic from user-interface commands, but that is not always the case. Most of the time, the application logic and the user
+			  interaction are tightly coupled. Basically, many requests are sent to the X kernal and a response is expected before making the next step. This is bad on WANs.
+			- There are some solutions to the above problem. One of them is to re-engineer the implementation of the X protocol. Important part of the work concentrates on bandwidth reduction by
+			  compressing messages. Messages are considered to be a fixed part, which is treated as an identifier, and a variable part. Multiple messages will have teh same identifier and often
+			  contain the same data. This property can be used to send only the differences between messages having the same identifier. The sending and receiving sides maintain a local cache 
+			  where the entries can be looked up using the identifier of the message. When a message is sent, look in the cache. If the
+			  message is found, then a previous message with the same identifier, but with different data was sent. If that is the case, then differential encoding is sued to only send the 
+			  differences between the 2 messages. At the receiving end, the message is also looked up in the cache, after decoding through the differences that can take plae. If there is a cache
+			  miss, standard compression techniques are used that leads to factor 4 improvement in bandwidth. This technique has reported bandwidth reductions of up to 1000
+			- Another solution is to keep the software at the display very simple and to let processing happen on the application side. This requires compression techniques in order to prevent
+			  bandwidth availability to be a problem.
+	- Client-side software for distribution transparency:
+		- there is more to clients than user interfaces. Parts of the processing and data level in the client-server application are executed on the client side.
+		- access transparency: client-side stubs for RPCs provides the same interface as the server, but hides the differences in machine architectures, as well as the actual communication
+		- location/migration transparency: server lets the client-side software know when the server changes location, so the client can hide it from the user. The client rebounds to the server
+		  location. At worst the client notices a temporary lost of performance
+		- replication transparency: client stub send multiple requests to replicated servers and collect the incoming responses as one to the client
+		- failure transparency: client middleware can be configured to repeatedly attempt to connect to a server or try another server after several failures. Sometimes the client middleware will
+		  returned cached data
+		- concurrency transparency: handled through special intermediate servers, transaction monitors, and requires less support from client software. Persistence transparenct is often completely
+		  handled by the server
+- Servers:
+	- General Design Issues
+		- Server is a process implementing a service on the behalf of clients.
+		- A server does the following:
+			1) Waits for an incoming request from a client
+			2) takes care of the request
+			3) Waits for another request
+		- Iterative server: server handles the request, and returns a response to the requesting client.
+		- Concurrent server: does not handle the client request itself, but passes it to a separate thread, and will wait for another request
+		- A multithreaded server is an example of a concurrent server
+		- Issue is where clients contact a server. Clients send requests to an end point (port) on the server. Each server will listen on a specific port. However, how do clients know whih port to
+		  reach? Globally assign end points for well known services. Ex) servers that handle FTP requests listen to port 21. 
+		- Some services do not require a preassigned end point. Sometimes the client needs to loop up the end point. One solution is to use a special daemon running on each machine on the server side.
+		  The daemon itself listens to a well known end point. A client will contact the daemon, request the end point, then contact the specific server
+			- Special Daemon: keeps track of the current end point of each service implemented by a server.
