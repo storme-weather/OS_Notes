@@ -12,7 +12,78 @@ Chapter 3 (Processes)
 		  only the minimum amount of info to have a CPU be shared amoung several threads. This means a context switch for a thread is significantly cheaper than a context switch for a process
 		- Also it is up to the user to keep threads belonging to the same process to keep to themselves, while processes have to keep to themselves
 		- Multithreading leads to a performance gain
+		- Thread packages are implemented in user space
 		- Most important benefit in a single-threaded process is one thread can block the entire process
 		- Threads allow the user to exploit parallelism when a program is executed on a multiprocessor system.
 		- Processes require IPC to communicate with each other (shared memory or message passing). Threads share the same space, so communication is easy and cheaper for threads.
-		- Lightweight process (LWP): runs in the context of a single process
+		- Lightweight process (LWP): runs in the context of a single heavyweight process, and there can be several LWPs per process.
+		- LWPs work like this: when a LWP is made, it gets its own stack and is executes the scheduling routine in search of a thread to execute. If several existrrs, they each execute the scheduler.
+		  The thread table is shared by the LWPs. Synchronization between LWPs does not require kernal support (need mutexes and semaphores)
+		- Advantages of LWPs:
+			-creating, destorying, and synchronizing threads is cheap and doesn't involve the kernal.
+			- if a process has enough LWPs, a blacking system call will not suspend the entire process
+			- application doens't need to know about the LWPs
+			- can easily be used in multiprocessing environments by executing different LWPs on different CPUs
+		- Drawback of LWPs:
+			- still need to create and destrot LWPs which is just as expendsive as kernal threads, but only done occasionally
+	- Threads in distributed systems:
+		- provide a convenient means of allowing blocking system calls without blocking the entire process. That means this can be used in DS so it easier to communicate with multiple connections
+		- Multithreaded clients:
+			- to establish a high degree of distribution transparency, DS that operate in WANs may have to conceal long interprocess message times. The round trip delay can be hundereds of ms
+			- Best way to hide the latency is to start the communicate and do something else immediately
+				Ex) Consider what happens in web browsers. Have to fetch each element of a web document (HTML, images, text, ect), browser has to setup a TCP/IP connection, read incoming data,
+				    and pass it to a reading component. Setting up the connection and reading the data are blocking operations. A web browser starts with fetching the HTML and displays it. 
+				    To hide communication latencies, some browers start displaying data while it is still coming in. While the user sees the text, the browser is still working to get more data
+				    Each thread sets up a separate connection to the server and pulls data. Setting up a connection and reading data from the server can be programmed using standard blocking
+				    system calls. User should only notice delays in the display of images and such, but can still browse through the web document
+			- Another benefit to using multithreaded web browsers, where several connections can be opened simultaneously. This is important because web servers can be replicated across multiple machines meaning tons
+			  of connections can be served without a single server being overloaded
+		- Multithreaded servers:
+			- There are benefits for multithreaded clients, but most of the benefits exists for servers.
+			- Benefits:
+				- multithreading simplies server code a substantial amount
+				- easier to develop servers that exploit parallelism to attain high performance
+			- to understand the benefits of threads for server code, consider the organization of a file server that occasionally blocks waiting for the disk. The file server normally waits for an 
+			  incoming request for a file operation, carries out the request, and sends back the reply. A popular organization has one thread being the dispatcher, which reads for incoming file 
+			  operations. The requests are sent by clients to an end-point, and are placed into a worker thread. Worker proceeds by performing a blocking read on the local file system, which can cause the thread to 
+			  suspend until the data is fetched. If the thread is suspended, then another thread is selected to be executed. 
+			- Running our example on a single threaded machine would result in less requests being served
+			- There is one more way and that is through a finite state machine. Only one thread exists to respond to a request. If the request can be served through a cache, then good. Otherwise,
+			  go to disk. However, the thread doesn't block and records the state of the request into a table, goes onto the next message.
+- Virtualization:
+	- resource virtualization: only having a single resource, but can pretend there are more
+	- Role of virtualization in DS:
+		- Virtualization deals with extending or replacing an existing interface to mimic the behavior of another system
+		- Virtualization was introduced in the 70's to run legacy software on expendsive mainframe hardware.
+		- Virtualization is easy due to software at high levels of abstraction are stable
+		- Since networking has become pervasive, that makes it easy for clients to connect to VMs with various different types of OS and applications
+		- Virtualization provides a high degree of portability and flexibility. Management of edge servers become much easier with virtualization. The reason is it can easily be replicated.
+	- Architecture of VMs
+		- 4 types of interface:
+			1) interface between hardware and software consisting of machine instructions that can be invoked by any program
+			2) interface between hardware and software consisting of machine instructions that can be invoked by privileged programs (OS)
+			3) interface consisting of system calls as offered by an OS
+			4) interface consisting of library calls, in the form of an API. System calls are hidden by the API
+		- Virtualization takes place in 2 different ways
+			1) can build a runtime system that provides and abstract instruction set that is used for executing applications. Instructions can be interpreted, but could also be 
+			   emulated (think of WINE). This is known as a process virtual machine, stressing that virtualization is done only for a single process
+			2) provide a system that is implemented as a layer shielding the original hardware, but offering an instruction set of that same or other hardware as an interface. The interface can be provided 
+			  simultaneously to different programs. Because of this, it is possible to run multiple OS on the same machine. The layer is referred to as a virtual machine monitor (VMM). Think of 
+			  VMware as an example
+		- VMMs will become more important because of reliability and security for DS because they allow isolation of an application and its enviornment. A failure caused by an error or security attack
+		  only affect the VMM. We can remove it and fire up a new one. Also VMMs can be moved from one machine to another easily.
+- Clients:
+	- Networked user interfaces:
+		- major task of a client is to provide the means for users to interact with remote servers. 2 ways this can be supported:
+			1) each remote service the client will have a counterpart that can contact the service over the network. An example would be an agenda running on a user's PDA that needs to sync with a
+			   remote shared agenda
+			2) provide direct access to remote services by offering a convenient user interface. The client is used only as a terminal with no need for local storage leading to an 
+			   application-neutral solution. With networked user interfaces, everyything is processed and stored on the server. This thin-client approach is getting more attention as internet 
+			   connectivity increases and hand-held become more popular. Thin-client solutions are popular as they ease the task of system management
+		- X Window System:
+			- This system is sued to control bit-mapped terminals, which include a monitor, keyboard, and mouse. X can be viewed as part of an OS that controls the terminal. Heart of the system is formed byt he X 
+			  kernal. Contains all terminal-specific device drivers and is generally highly hardware dependent.
+			- X kernal gives a low-level interface for controlling the screen, but also for capturing keyboard and mouse events. 
+			- Good thing about X is the X kernal and applications don't need to be on the same machine. 
+		- Thin-client network computing
+			-
