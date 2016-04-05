@@ -125,3 +125,27 @@ Chapter 3 (Processes)
 		- Some services do not require a preassigned end point. Sometimes the client needs to loop up the end point. One solution is to use a special daemon running on each machine on the server side.
 		  The daemon itself listens to a well known end point. A client will contact the daemon, request the end point, then contact the specific server
 			- Special Daemon: keeps track of the current end point of each service implemented by a server.
+		- An issue with a daemon is having to implement each service as a separate server is a waste of resources.
+		- Instead of using a daemon due to the issue (separate server for each service), we can use a single server known as a superserver.
+			- Superserver: a single server listenting to each end point that is linked to a service
+		- Another issue when designing a server is how can the server be interrupted? Example: say a user FTPs a file to the server, but it is the wrong file. A couple solutions can be used:
+			- have the user exit the client application, which breaks the connection. This is basically a clean restart
+			- make it possible to send out-of-band data which is data that is processed by the server before any other data from the client. One way to develop this is let the server listen to a
+			  separate control end point where the client sends out-of-band data, while listening to the other end point containing the other data (will have lower priority). Another way to
+			  implement this is to send out-of-band data across the same connection that has the original request.
+		- Stateless server: does not keep info on the state of its clients, and doesn't have to inform clients on a state change. 
+			Ex) a web server is stateless. It only responds to incoming HTTP requests which is for uploading a file to a server or fetching a file. When the request is done, then the server
+			    forgets about the client. Also files on that server can be changed without notifying the clients connected to the server
+		- Many stateless designs do contain some info on the clients, but if the server goes down for w/e reason, then the info is lost. However, the info wasn't overly important so nothing is done
+		  to recover the info.
+		- some stateless designs maintain a soft state. A soft state is where the server promises to maintain state for the client, but only for a limited amount of time. The server will fall back to
+		  normal behavior after that time alloted has passed
+		- Stateful server: maintains persistent info on the clients. Info needs to be deleted by the server, and doesn't automatically go away like soft state stateless machines
+			Ex) file server that allows a client to keep a local copy of a file. Would need to update the file and its permissions accordingly when it is changed on the server
+		- The example above shows how there are advantages to a stateful server (we know what users have the file). However, a drawback to this is if the server crashes, then all of that info has to
+		  be recovered
+		- With stateful servers, there are differences between temporary session and permanent states. Session states are often maintained in 3-tier client-server architectures, where the application
+		  server needs accesss to a db server through a series of queries before responding to a client. No real harm is done if the session state is lost if the client can re-issue the original
+		  request. Permanent state is for info maintained in dbs such as customer info, keys associated with purchased software, ect. 
+		- Servers can also send a cookie to keep track of clients, but privacy is violated with this method
+		- a stateless or stateful design should not affect the services provided by the server.
