@@ -149,3 +149,45 @@ Chapter 3 (Processes)
 		  request. Permanent state is for info maintained in dbs such as customer info, keys associated with purchased software, ect. 
 		- Servers can also send a cookie to keep track of clients, but privacy is violated with this method
 		- a stateless or stateful design should not affect the services provided by the server.
+	- Server Clusters:
+		- General Organization:
+			- A server cluster is a collection of machines connected through a network, where each machine runs one or more servers. They are typically connected through a LAN
+			- Typically they are organized in 3 tiers:
+				1) first tier has a logical switch where client requests are routed. These switches can be transport-layer switches that accept incoming TCP connections and pass requests to
+				   one of the servers in the cluster
+				2) Second tier has application/compute servers that are high-performance hardware that deliver computing power. Could run on low end machines since compute power is not the 
+				   bottleneck
+				3) Third tier has data-processing servers (file and db servers). Depending on the usage of the cluster, these servers may run on specialized machines configured for high-speed
+				   disk access, and have large server-side data caches
+			- Server clusters won't always follow this organization. Sometimes each machine has its own local storage, integrating application and data processing in a single server, thus having a
+			  2-tiered architecture
+			- if a cluster offers multiple services, they can run on different application servers. The switch will not have to distinguish services or it cannot forward the requests to the proper
+			  server.
+			- certain machines can be temporarily idle, while others are overloaded. Can use virtual machines to migrate code to real machines
+			- Important design goal for server clusters is to hide that there are multiple servers. Clients running on remote servers have no need to know about the organization of the cluster. 
+			  This access transparency is done througha  single access point which is implemented through a hardware switch. Switch forms the entry point for the cluster, offering one network 
+			  address. A cluster can have multiple access points where each access point has its own dedicated machine. This is done for scalability and availability.
+			- To access a cluster, setup a TCP connection over, which application-level requests are sent as part of a session. Session ends by ending the connection. For transport-layer switches,
+			  switch accepts incoming TCP connections and hands such connections to one of the servers. Known as a TCP handoff.
+			- Switch plays an important role in distributing the load amongst various servers. They decide where the requests are sent, they also decide what server handles further processing of
+			  the request. Simplest load-blanacing policy for a switch is round robin.
+		- Distributed Servers:
+			- Clusters discussed so far are statically configured. There is often a separate administration machine that keeps track of available servers, and pass this info to the switch
+			- Most clusters have a single access point. When it fails, the cluster is unavailable. To avoid this, several access points can be provided.
+				Ex) DNS can return several addresses, all belonging to the same host. This still requires clients to make several attempts if one of the access points fail, but at least it
+				    isn't a hard failure
+			- Desirable to have stability (long-living access point), but also want a high degree of flexibility in configuring the cluster. This leads to a design where there are a dynamically
+			  changing set of machines with various access points, but looks like a single machine to clients. 
+			- Basic idea of a distributed server is clients benefit from a robust, high-performing, stable server. Grouping simpler machines transparently into a cluster, and not relying on the
+			  availability of one, it is possible to achieve a better degree of stability.
+	- Managing server clusters:
+		- Common aproaches:
+			- most common approach with a cluster is to extend traditional managing functions of a single pc to a cluster. This means an administrator can into a node from a remote client to
+			  execute commands to monitor, install, and change components
+			- more advances is to hide that you need to log into a node, and provide an interface for an admin machine that collects info from one or more server, upgrade components, add/remove
+			  nodes, ect. Main advantave of this approach is that collective operations operate on a group of servers. Known as Cluster Systems Management. Once the cluster gets huge though, can't
+			  use this form of management.
+			- Most of the support for super large clusters is ad hoc. No systematic approach for managing huge clusters.
+		- PlanetLab Example
+			- strange cluster server where different organizations each donate one of more computers adding up to hundered of nodes. These PCs form a 1-tier cluster where access, processing, and 
+			  storage take place on each node individually.
