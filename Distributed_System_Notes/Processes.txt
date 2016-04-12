@@ -191,3 +191,100 @@ Chapter 3 (Processes)
 		- PlanetLab Example
 			- strange cluster server where different organizations each donate one of more computers adding up to hundered of nodes. These PCs form a 1-tier cluster where access, processing, and 
 			  storage take place on each node individually.
+			- an organization donates one or more nodes, and each node can be thought as a PC or a cluster of machines.
+			- 2 important components:
+				1) VMM which is an enhanced Linux OS. Enhancements are mainly adjustments for supporting the second component
+				2) Vservers which are a separate enviornment where a group of processes run. Processes from different vservers are independent. They cannot directly share resources
+			- A vsedrver may provide an enviornment where a process will notice that it can use Python with some web server. Another vserver can support another version of Python with the same web
+			  server.
+			- Linux VMM ensures that vservers are separted. Isolation between processes in different vservers is strict. For example, 2 processes in different vservers can have the same userID, but they may not be 
+			  from the same user. This eases supporting users from different organizations that want to use PlantLab.
+			- PlanetLab introduces a slice, which is a set of vservers where each vserver runs on a different node. Think of it as a virtual server cluster implemented by a collection of VMs
+			- What makes PlantLab a problem:
+				1) nodes belong to different organization and each organization should be allowed to specify who is allowed to run apps on their nodes, and restrict resource usage appropiately
+				2) there are various montioring tools available, but they assume a specific combination of hardware and software. They are tailored to be used within a single organization
+				3) programs from different slices, but on the same node should not interfere with each other. Problem is similar to independence in OSs
+			- Node manager manages PlantLabs resources. Each node has a manager whose only task is to make oither vservers on the node it manages and to control resource allocation. It does not
+			  make policy decisions, but simply a mechanism to get a program running on the node
+			- Keeping track of resources id one by the resource specification (rspec). rpsec specifies a time interval which certain resources have been allocated. rpsec is identified through a gloabbly unique 
+			  identifier known as a resource capability (rcap).
+			- resources are bound to slices. To use resources, you need to create a slice. A slice is associated with a service provider, which is seen as an entity having an account on PlantLab.
+			  Every slice can be identified through attributes from the provider
+			- The slice authority needs to authenticate the service provider
+			- A node owner provides a slice creation service for a slice authority to create slices. It essentially delegates resource management to the slice authority.
+			- A management authority delegates the creation of slices to a slice authority.
+- Code Migration
+	- Sometimes there are situations where passing programs simplifies the design of a DS
+	- Approaches to code migration
+		- Reasons for migrating code:
+			- Performance:
+				- moving an entire process from one machine to another is costly, so there needs to be a good reason to moving a process. A case where this is good when one machine is 
+				  heavily-loaded, so move the process to another machine that is under utilized.
+				- Another way to improve performance is minimizing communication. An example would be having a client check forms instead of the server.
+				- Exploiting parallelism also increases performance. Think of searching for info on the web. Easy to implement a search query, so have it sent to some agent that moves from 
+				  site to site. Make several copies and are able to achieve linear speed-up compared to using on program instance.
+			- Flexibility:
+				- partition the application into different parts and decide in advance where each part should be executed. This led to differed multitiered client-server applications
+				- if code can move between different machines, it becomes possibly to dynamically configure DSs. This means software is readily available to the client (no pre-install of 
+				  software)
+				- Can also let server provide the client's implementation when necessary (when the client binds to the server). Clients dynamically downloads the implements and goes through 
+				  the initialization steps, and invokes the server. The downloaded code can be executed on the client's machine. Main advantage to downloading to the client is clients don't 
+				  need the software pre-installed to talk to servers. Software can be moved in as necessary and discarded when no longer needed. Another advantage is as long as interfaces are 
+				  standardized, we can change the client-server protocol. Changes do not affect existing client apps that rely on the server. There is a disadvantage though, which is security.
+				  Blindly trusting downloaded code is risky.
+		- Models for code migration:
+			- communication in DS is concerned with exhanging data between processes. Code migration in the broadest sense deals with moving programs between machines
+			- To better understand different models for code migration, use a framework where the process consists of 3 segments:
+				1) Code segment: part that contains the set of instructions that make up the program that is being executed
+				2) resource segment: contains refernces to external resources needed by the process such as files, devices, other processes, ect
+				3) Execution segment: used to store the current execution state of a process, consisting of private data, the stack, and the program counter
+			- bare minimum for code migration is to provide weak mobility.
+				- weak mobility: possible to transfer only the code segment, along with some initialization data. A transferred program always starts from one of several predefined starting 
+				  positions. This ensures simplicity. Weak mobility also requires that a target machine can execute that code, which means we only need to make the code portable
+			- Strong mobility: the execution segment can be transferred unlike in weak mobility. A running process can also be stopped, moved to another machine, then resume execution where it 
+			  left off. This is more general than weak mobility, but it is much tougher to implement
+			- There can be further distinction from weak and strong mobility, and that is the distinction between sender-initiated and receiver-initiated migration.
+				- Sender-initiated migration: is initiated at the machine where the code currently resides or is being executed. Typically this is done when uploading programs to a compute 
+				  server
+				- Receiver-initiated migration: initiative for code migration is taken by the targer machine. Java applets are an example
+			- Receiver-initiated migration is easier to implement than server-initiated. In sender-initiated migration, you need to securely upload code to a server, and it requires the client 
+			  being previously registered and authenticatred at that server. The server needs to know about all of its clients because the client will presumably want access to the server's 
+			  resources, and protecting the resources is important. In receiver-initiated migration, the code can be downloaded anonymously because the server is usually not interested in the 
+			  client's resources. Also it improves client-side performance.
+	- Migration and local resources
+		- So far we have only taken the code and execution segment into account. The resource segment needs special attention
+		- what makes code migration hard is that the resource segment cannot be simply transferred along with other segments without being changed. 
+		- 3 types of resource binding:
+			1) Binding by identifier: This is the strongest binding, and happens when a process uses a URL to refer to a specific web site or when it refers to an FTP server
+			2) Binding by value: is when a program relies on the standard libraries, such as programming languages C or Java. Available locally but the exact location may differ between machines
+			3) Binding by type: when a process indicates it needs a resource for a specific type. Example is references to local devices such as monitors and printers.
+		- When migrating code, need to change the references to resources, but cannot affect the resource binding. Changing a reference depends on whether that resource can be moved along with the
+		  code to the target machine. 
+		  	- Unattached resources: can be easily moved between different machines, and are file associated only with the program that is to be migrated.
+			- Fastened resource: possible to move or copy but is costly (think dbs and complete web sites).
+			- Fixed resources: are intimately bound to a specific machine or enviornment and cannot be moved (think of local devices)
+		- Process to resource binding
+			1) Binding by identifier and unattached resources: move the resource or establish a global systemwide reference
+			2) Binding by identifier and fastened resources: same as 1
+			3) Binding by identifier and fixed resources: only establish a global systemwide reference
+			4) Binding by value and unattached resources: copy the value of the resource, or move the resource, or estable a global reference
+			5) Binding by value and fastened resources: establish a global reference or copy the value
+			6) Binding by value and fixed resources: establish a global reference
+			7) Binding by type and unattached resources: rebind the process to a locally available resource, move the resource, or copy the value of the resource
+			8) Binding by type and fastened resources: rebind the process to a locally available resource, copy the value of the resource, or establish a global reference
+			9) Binding by type and fixed resources: Rebind processes to locally available resource or establish a global reference
+	- Migration in heterogeneous systems:
+		- this far assumed migrated code is easily executed at the target machine and is in order when dealing with homogeneous systems, however most DS are heterogeneous collections (having their own
+		  OS and environments).
+		- migration requires that each platform is supported, meaning the code segment can be executed on each platform and the execution segment can represented by each platform
+		- Main problem:
+			- The target machine may not be suitable to execute the migrated code. The definition of process/thread/processor contect is highly dependent on local hardware, OS, and runtime system
+		- Solution:
+			- make use of an abstract machine that is implemented on different platforms (basically having their own VM) or do virtual machine migration
+		- 3 ways to handle migration (they can be combined)
+			1) Pushing memory pages to the new machine and resending the ones that are later modified during the migration process
+			2) Stopping the current VM; migrate memory, and sart the new VM
+			3) Letting the new VM pull in new pages as needed. Basically, let processes start on the new VM immediately and copy memory pages on demand
+		- The second option can lead to unacceptable downtime if the migrating VM is running a live service. However, a pure on-demand approach represented by the 3rd option may prolog the migration
+		  period, but may lead to poor performance because it takes a long time before the working set of migrated processes has been moved to the new machine
+	
