@@ -1,0 +1,47 @@
+Chapter 4 Communication RPC
+- Distributed Systems and Layer Structure
+	-  Layers
+	   
+	   Application                                      Higher-level app protocols
+	          MIDDLEWARE LAYER                         
+	   Transport                        TCP & UDP       communcation facilities for most DS
+	   
+	   Internetwork                     IP              Low-level layers
+	   
+	   Network Interface                Ethernet        Low-level layers
+	   
+	   Underlying Network                               Low level layers
+
+- Middleware Layer
+	- this layer is logically at the application layer but contains a rich set of general-purpose protocols and higher-level communcation services (RPC) that can be used by different applications	
+		- (Un)marshalling of data is necessary for integrated systems
+
+- Types of communication
+	- Persistent communication: a message that has been submitted for transmission is stored by the communication middlware as long as it takes to deliver it to the receiver. The sender is no longer
+	  needed after the mail is sent to the communication middleware
+		Ex) think of an electronic mail system. The core of this delivery system is in the middleware communication service. A host runs a user agent allowing users to compose, send, and receive
+		    email. User passes the mail to the delivery system, expecting it to eventually deliver the mail to the intended recipient. The receiver's side connects to the mail delivery system to see
+		    if they have any mail
+	- Transient communication: a message is stored by the communcation system as long as the sender and receiver are both in execution. The middleware is unable to deliver the message due to a
+	  transmission aka the recipient is not active or the sender disconnects. The message is simply dropped
+		Ex) TCP, UDP, IP routing
+	- Besides being persistent or transient, the communication can be asynchronous or synchronous communication
+		- Asynchronous communication: sender continues immediately after it has submitted its message for transmission. The message is temporarily stored by the middleware upon submission
+		- Synchronous communication: sender is blocked until its request is known to be accepted. 3 points where synchronization can take place.
+			1)  sender may be blocked until the middleware notifies that it will take over the transmission of the request
+			2) sender may synchronize until its request has been delivered to its intended recipient
+			3) synchronization may take place by letting the sender wait until its request has been fully processed (when the recipient returns a response)
+	- Various combinations of persistence and synchronization occur
+		- persistence in combination with synchronization at request submission is a popular one which is a scheme for message-queueing systems.
+		- transient communication with synchronization after the request is fully processed is widely used. This corresponds to RPC
+- Remote Procedure Calls
+	- many DS have been based on explicit message exchange between processes. The procedures send and receive do not conceal communication, which is important to achieve access transparency in DS.
+	- How about we allow programs to call procedures located on other machines. When a process on machine A calls a procedure on machine B, the calling process on A is suspended and execution of the
+	  called procedure takes place on B. Info can be transported from the caller to the callee in the parameters and can come back in the procedure result. No message passing is visible to the programmer,
+	  and this is known as Remore Procedure Call (RPC).
+	- RPC makes distributed computing look like centralized computing by allowing remote services to be called as procedures
+	- Some issues do exist such as how to pass parameters, how heterogeneous machines have different data representation, failures, semantics in the face of errors, ect
+	- Basic RPC Operation
+		- Types of calls
+			1) Call by value: think of integers or strings where the value can be directly given to the server
+			2) 
