@@ -1,5 +1,5 @@
 Chapter 12 (Web Servers) This will only deal with the communication aspect of the chapter for a presentation
--Hypertext transfer protocol
+- Hypertext transfer protocol
 	- All communication in the web between clients and servers are based on HTTP (HYPERTEXT TRANSFER PROTOCOL)
 	- HTTP is basically the client sending a message to the server and waiting for a response
 	- HTTP is stateless, meaning it has no clue about the connection and does not need a server to maintain information on its clients
@@ -31,3 +31,17 @@ Chapter 12 (Web Servers) This will only deal with the communication aspect of th
 		- DELETE is used to request a server to remove the document that is named in the message sent to the server. Of course security needs to be in place. Sometimes the server may not have
 		  permission to delete the file
 
+	- HTTP messages
+		- All communication between a client and server is through messages, and HTTP only recognizes request and response messages.
+		- Request messages have 3 parts:
+			1) Request line: This is mandatory and identifies the operation that the client wants the server to carry out along with a reference to the document associated with that requesti.
+				| Operation | Reference | Version |
+			2) Request message headers: way for the client to specify what kind of responses it wants back from the server
+				Ex) client wants to do a GET on specific files that haven't been updated in 10 days (If-Modified-Since)
+			3) Message Body
+		- Response message consists of 3 parts:
+			1) Status line: containing a version number, 3 digit status code, and phrase
+				- 200 OK
+				- 404 Not Found
+			2) Response message headers:
+				Ex) server saying a response is no longer valid (Expire message header)
