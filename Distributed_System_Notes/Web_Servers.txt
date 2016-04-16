@@ -1,0 +1,12 @@
+Chapter 12 (Web Servers) This will only deal with the communication aspect of the chapter for a presentation
+-Hypertext transfer protocol
+	- All communication in the web between clients and servers are based on HTTP (HYPERTEXT TRANSFER PROTOCOL)
+	- HTTP is basically the client sending a message to the server and waiting for a response
+	- HTTP is stateless, meaning it has no clue about the connection and does not need a server to maintain information on its clients
+	- HTTP Connections
+		- Typically based on TCP. When a client sends a request to a server, it is setup by a TCP connection with the server. This TCP connection is used to obtain a response back from the server.
+		  Due to using TCP, HTTP doesn't need to know about the connection (being lost or still up). Both client and server assume the messages make it across. If something has gone wrong (connection
+		  time out or error), then it is reported, but no attempt in recovering the data.
+		- Old versions of HTTP had issues with inefficient use of TCP connections. 
+		- in HTTP 1.0 or older, each request to a server required a separate connection. When the server responded, the connection wa sbroken down. These are known as nonpersistent connections A
+		  drawback of nonpersistent connections is the cost of setting up TCP connections. Time to transfer a document to a client is a lot.
