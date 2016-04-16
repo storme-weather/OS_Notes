@@ -10,3 +10,18 @@ Chapter 12 (Web Servers) This will only deal with the communication aspect of th
 		- Old versions of HTTP had issues with inefficient use of TCP connections. 
 		- in HTTP 1.0 or older, each request to a server required a separate connection. When the server responded, the connection wa sbroken down. These are known as nonpersistent connections A
 		  drawback of nonpersistent connections is the cost of setting up TCP connections. Time to transfer a document to a client is a lot.
+		- HTTP does not prevent the client from starting seveal connections simultaneously to the same server. This is to hide latency caused by connection setup time and to transfer data in parallel
+		  from the server to the client.
+		- HTTP 1.1 made use of persistent connections, which issues several requests for each ((request, response)
+	- HTTP Methods:
+		- Head: Requests to return the header of a document
+		- Get: Request to return a document to the client
+		- Put: request to store document
+		- Post: Provide data that are to be added to a document
+		- Delete: Request to delete a document
+		- head operation is submitted tot he server when a client does not want the actual document, but only the metadata
+			Ex) using head operation will return the time the referred document was modified. Can be used to verify the validity of the document cached by the client. Check if a document exists 
+			    without having to transfer the document
+		- Most important HTTP operation is get, and is used to fetch documents from the server to give to the client. Possible to specify that a document should return only if it has been modified
+		  (since the user last cached the file). Files can have tags (character strings), and GET files that have a matching tag.
+		- 
