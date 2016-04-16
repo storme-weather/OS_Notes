@@ -24,4 +24,10 @@ Chapter 12 (Web Servers) This will only deal with the communication aspect of th
 			    without having to transfer the document
 		- Most important HTTP operation is get, and is used to fetch documents from the server to give to the client. Possible to specify that a document should return only if it has been modified
 		  (since the user last cached the file). Files can have tags (character strings), and GET files that have a matching tag.
-		- 
+		- PUT is opposite of get. The client wants to store a document on the server under a given name. Servers won't blindly allow the client to run PUT, but will allow authorized clients to do so
+		  (not covered in this part).
+		- POST is similar to PUT, except the client will request data to be added to a document or collection of documents. 
+			Ex) posting an article to a news group. The distinguishing deature, compared to a put is that a post tells which group of documents an article should be added to. 
+		- DELETE is used to request a server to remove the document that is named in the message sent to the server. Of course security needs to be in place. Sometimes the server may not have
+		  permission to delete the file
+
