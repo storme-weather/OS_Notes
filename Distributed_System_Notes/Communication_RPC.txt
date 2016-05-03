@@ -41,7 +41,76 @@ Chapter 4 Communication RPC
 	  and this is known as Remore Procedure Call (RPC).
 	- RPC makes distributed computing look like centralized computing by allowing remote services to be called as procedures
 	- Some issues do exist such as how to pass parameters, how heterogeneous machines have different data representation, failures, semantics in the face of errors, ect
-	- Basic RPC Operation
+	- Stubs:
+		- Client makes procedure call to the client stub
+		- Server is written as a standard procedure
+		- stubs take care of packaging arguments and sending messages
+		- packaging parameters is called marshalling
+		- Stub compiler generates stub automatically from specs in an Interface Definition Language (IDL)
+	- RPC Steps:
+		1) The client procedure calls thge client stub in the normal way
+		2) Client stub builds a message (marshalls) and calls the local OS
+		3) Client's OS sends the message to the remote OS
+		4) Remote OS gives the message to the server stub
+		5) Server stub unpacks (unmarshalls) the parameters and calls the server
+		6) Server does the work and returns the results to the stub
+		7) server stub packs (marshalls) it in a message and calls its local OS
+		8) Server's OS sends the message to the client's OS
+		9) Client's OS gives the message to the client stub
+		10) Stub unpacks (unmarshalls) the result and returns to the client
+	- Types of parameter passing
 		- Types of calls
-			1) Call by value: think of integers or strings where the value can be directly given to the server
-			2) 
+			1) Call by value: think of integers or strings where the value can be directly given to the server, and modifications do not affect the calling side
+			2) Call by reference: the address of a parameter is pushed onto the stack and any modification affects the variable at the calling side
+			3) Call-by-copy/restore: copy the variable first to the stack (call by value) and copy back after the call, overwriting the caller's original value
+		- Parameter marshalling:
+			- Client and server machines typically have different data representations, so they need a way to interpret messages from each other. Typically they need to agree to some standard
+			  like XML, JSON, ect. This is what messages are typically transformed into
+			- Solutions for Pass by Reference:
+				- Forbid reference parameters (if only it were so simple)
+				- Client stub can copy the entire data structure
+					- an array can be sent if the size is known
+					- server stub saves changes and sends it back
+				- How to handle open-ended data structures:
+					- Prohibit them
+					- a remote reference (chase pointers on a network)
+			- Both client and server must follow the same protocol when passing parameters (agree on format and representation)
+			- Connection-Oriented vs connection less protocol
+				- To simplify a programmer's task, stub compiler generates stub automatically from specs in IDL
+	- Binding:
+		- Client must locate the server's machine and locate server on that machine. This is done by:
+			1) Server registers an endpoint and it is added to the end point table
+			2) The server then registers the service to the directory server
+			3) Client looks up the server in the Directory server
+			4) After identifying the server, it will ask for the endpoint
+			5) Now do RPC stuff
+		- Performance issues:
+			- exporting and importing incurs overheads
+			- binder can be a bottleneck
+			- Binder can do load balancing
+	- Failures in RPC:
+		1) Client unable to locate server
+			- Return error
+		2) Lost request messages:
+			- simple timeout mechanisms or resend
+		3) Lost replies:
+			- timeout mechanisms or resend
+		- There are some issues with resending:
+			- When the client times out, then retry the request. If a client does not receive reply after N attempts it assumes that the server has failed and gives up
+			- The server and re-execute and resend the results. However, can the requested operation be executed again? Can add sequence numbers to detect duplicate requests. Another issue with
+			  the server aspect is how long do you store the results for?
+		- Server failure:
+			- Exactly once: ideal case, same as local, but difficult to achieve
+			- At least once: will gurantee that RPC has been carried out at least once, but possible more
+			- At most once: will gurantee that RPC has been carried out at most once, but possibly none at all
+			- NO GURANTEES: When a server crashes, client gets no help and we promise nothing :)
+		- Client failure (known as an orphan):
+			- Extermination: log at client stub and explicitly kill orphans (overhead of maintaining disk logs)
+			- Reincatnation: divide time into epochs between failures and delete computations from old epochs
+			- Gentle Reincarnation: upon a new epoch broadcast, try to locate owner first (delete only if no owner)
+			- Expiration: give each RPC a fixed quantum T; explicitly request extensions (periodic checks with client during long computations)
+	- Types of RPC
+		- Traditional RPC: Send a request and wait for a response 
+		- Asynchronous RPC: Server stub immediately sends a reply to the client
+		- Deferred Synchronous RPC: client can do a non blocking poll at the server to see whether results are available through 2 async RPCs
+		- One-Way RPC: Client does not know if the request is accepted or not
